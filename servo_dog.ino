@@ -11,6 +11,7 @@
 #define NUMLEDS 2
 #define MAX_STEPS_IN_SEQ 10
 
+
 struct sequence {
 	byte no_of_steps;
 	byte audioclip;
