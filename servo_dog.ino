@@ -4,7 +4,7 @@
 #include <DFRobotDFPlayerMini.h>
 
 
-#define DEBUG
+//#define DEBUG
 #define MotionSensorPin 8 
 #define MOTION_COUNT_TRIGGER 5 //how mny times motion is to be detected in order to trigger an action
 #define LedPin 6
@@ -105,20 +105,20 @@ void setup()
   Serial.println(F("Initializing DFPlayer ... (May take 3~5 seconds)"));
 #endif
 
-  if (!myDFPlayer.begin(mySoftwareSerial)) {  //Use softwareSerial to communicate with mp3.
+  while (!myDFPlayer.begin(mySoftwareSerial)) {  //Use softwareSerial to communicate with mp3.
 #ifdef DEBUG
 	Serial.println(F("Unable to begin:"));
     Serial.println(F("1.Please recheck the connection!"));
     Serial.println(F("2.Please insert the SD card!"));
 #endif
-    while(true);
+	delay(1000);
   }
 
 #ifdef DEBUG
   Serial.println(F("DFPlayer Mini online."));
 #endif
 
-  myDFPlayer.volume(25);  //Set volume value. From 0 to 30
+  myDFPlayer.volume(30);  //Set volume value. From 0 to 30
   myDFPlayer.outputDevice(DFPLAYER_DEVICE_SD);
 
 #ifdef DEBUG
@@ -150,6 +150,9 @@ void setup()
   delay(15);                       // waits 15ms for the servo to reach the position  
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
+
+  randomSeed(analogRead(A0)); //initialize random number generator
+
 }
 
 
@@ -170,8 +173,10 @@ void loop() {
 	
 	if (motion_count == MOTION_COUNT_TRIGGER)
 	{
-		active_seq = seq_count++%NO_OF_SEQS;
+		active_seq = random(0, NO_OF_SEQS);
+		//active_seq = seq_count++%NO_OF_SEQS;
 		//active_seq = 5;
+		
 		myDFPlayer.playFolder(1, dog[active_seq].audioclip);  //play specific mp3 in SD:/15/004.mp3; Folder Name(1~99); File Name(1~255)    
 
 		strip.setPixelColor(0, strip.Color(dog[active_seq].col_ON[0], dog[active_seq].col_ON[1], dog[active_seq].col_ON[2]));
@@ -199,64 +204,7 @@ void loop() {
 }
 
 
-void loop1() {
-    byte cmd;
-    static byte motion_count=0;
-    int motion = digitalRead(MotionSensorPin); // Read digital OUT value
-    int pos, col1, col2;
-
-    if (motion)
-      motion_count++;
-    else
-      motion_count=0;
-
-    if (motion_count==MOTION_COUNT_TRIGGER)
-    {
-    myDFPlayer.playFolder(1, 2);  //play specific mp3 in SD:/15/004.mp3; Folder Name(1~99); File Name(1~255)    
-
-    pos=70; col1 = col2 = 185;
-    myServo.write(pos);              // tell servo to go to position in variable 'pos'
-    strip.setPixelColor(0, strip.Color(col1,0,0)); 
-    strip.setPixelColor(1, strip.Color(col2,0,0)); 
-    strip.show(); // This sends the updated pixel color to the hardware.
-    delay(500);
-    pos=35; //50;
-    myServo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(300);
-    pos=70;
-    myServo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(250);
-    pos=40;
-    myServo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(250);
-    pos=20;
-    delay(100);
-    myServo.write(pos);              // tell servo to go to position in variable 'pos'
-    pos=60;
-    delay(200);
-    myServo.write(pos);              // tell servo to go to position in variable 'pos'
-    pos=30; //40
-    myServo.write(pos);              // tell servo to go to position in variable 'pos'
-    delay(1200);
-    
-    pos=10; col1 = col2 = 10;
-    myServo.write(pos);              // tell servo to go to position in variable 'pos'
-    strip.setPixelColor(0, strip.Color(col1,col1,0)); 
-    strip.setPixelColor(1, strip.Color(col2,col2,0)); 
-    strip.show(); // This sends the updated pixel color to the hardware.
-    delay(1200);
-    
-    pos=0; col1 = col2 = 0;
-    myServo.write(pos);              // tell servo to go to position in variable 'pos'
-    strip.setPixelColor(0, strip.Color(col1,0,0)); 
-    strip.setPixelColor(1, strip.Color(col2,0,0)); 
-    strip.show(); // This sends the updated pixel color to the hardware.
-    delay(6000);
-    
-    }
-}
-
-
+#ifdef DEBUG
 void loop_console() {
     byte cmd;
     static unsigned int pos = 0;
@@ -300,7 +248,6 @@ void loop_console() {
     Serial.print("col 1/2: ");Serial.print(col1);Serial.print("/");Serial.println(col2);
    delay(15);                       // waits 15ms for the servo to reach the position
 }
-
 
 void DFPlayer_printDetail(uint8_t type, int value){
   switch (type) {
@@ -357,3 +304,4 @@ void DFPlayer_printDetail(uint8_t type, int value){
   }
 }
 
+#endif
