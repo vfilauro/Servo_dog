@@ -6,7 +6,7 @@
 
 //#define DEBUG
 #define MotionSensorPin 8 
-#define MOTION_COUNT_TRIGGER 5 //how mny times motion is to be detected in order to trigger an action
+#define MOTION_COUNT_TRIGGER 1 //how mny times motion is to be detected in order to trigger an action
 #define LedPin 6
 #define NUMLEDS 2
 #define MAX_STEPS_IN_SEQ 10
@@ -32,7 +32,7 @@ sequence dog[NO_OF_SEQS] =
 	{
 		8,
 		2,	//Devil
-		{ 185, 0, 0 },
+		{ 235, 0, 0 },
 		{ 10, 0, 0 },
 		{ 70, 35, 70, 40, 20, 60, 30, 10 },
 		{ 50, 30, 25, 35, 20, 0, 120, 120 }
@@ -40,7 +40,7 @@ sequence dog[NO_OF_SEQS] =
 	{
 		8,
 		4,	//Growl 1
-		{ 1, 0, 0 },
+		{ 185, 0, 0 },
 		{ 1, 0, 0 },
 		{ 5, 10, 4, 11, 5, 2, 15, 3},
 		{ 40, 40, 40, 30, 30, 15, 85, 5 }
@@ -48,7 +48,7 @@ sequence dog[NO_OF_SEQS] =
 	{
 		8,
 		1,	//Growl & Bark 1
-		{ 60, 0, 0 },
+		{ 160, 0, 0 },
 		{ 20, 0, 0 },
 		{ 6,	17,		9,		54,		10,		21,		2,	10 },
 		{ 175,	25,		170,	15,		60,		100,	25,	40	}
@@ -64,7 +64,7 @@ sequence dog[NO_OF_SEQS] =
 	{
 		10,
 		6,	//Growl & Bark 2
-		{ 100, 0, 0 },
+		{ 200, 0, 0 },
 		{ 10, 0, 0 },
 		{ 15,	3,	54,		0,		45,		65,		31,		6,		20,		5 },
 		{ 160,	5,	30,		127,	15,		90,		30,		110,	240,	10 }
@@ -72,7 +72,7 @@ sequence dog[NO_OF_SEQS] =
 	{
 		4,
 		3,	//Bark
-		{ 10, 10, 10 },
+		{ 100, 100, 100 },
 		{ 1, 1, 1 },
 		{ 5, 70, 10, 2},
 		{ 7, 20, 20, 0}
@@ -171,7 +171,7 @@ void loop() {
 		motion_count = 0;
 
 	
-	if (motion_count == MOTION_COUNT_TRIGGER)
+	if (motion_count >= MOTION_COUNT_TRIGGER)
 	{
 		active_seq = random(0, NO_OF_SEQS);
 		//active_seq = seq_count++%NO_OF_SEQS;
